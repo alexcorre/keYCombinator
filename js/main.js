@@ -19,6 +19,50 @@ var Helpers = {
 };
 
 /**
+ * @module Walker
+ *
+ * DOM Walker
+ */
+var Walker = {
+
+	upArrowSelector: 'td center',
+
+	titleSelector: 'td.title a',
+
+	commentsSelector: 'td.subtext a:last-of-type',
+
+	/**
+	 * @method parse
+	 */
+	parse: function() {
+		var parsed = {
+			ups: [],
+			titles: [],
+			comments: []
+		};
+
+		// Up arrows
+		var $ups = $(this.upArrowSelector);
+		_.each($ups, function(element) {
+			parsed.ups.push($(element));
+		});
+
+		var $titles = $(this.titleSelector);
+		_.each($titles, function(element) {
+			parsed.titles.push($(element));
+		});
+
+		var $comments = $(this.commentsSelector);
+		_.each($titles, function(element) {
+			parsed.comments.push($(element));
+		});
+
+		return parsed;
+	}
+
+};
+
+/**
  * @module App
  * 
  * Main application module for listening to key events and
@@ -32,7 +76,8 @@ var App = {
 	 * Perform app initialization on page load
 	 */
 	initialize: function() {
-		console.log('initializing');
+		var parsed = Walker.parse();
+		console.log('parsed', parsed);
 	},
 
 	/**
@@ -47,6 +92,7 @@ var App = {
 				console.log('J');
 			}
 
+			// K
 			if (event.keyCode === 107) {
 				console.log('K');
 			}
