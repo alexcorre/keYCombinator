@@ -160,13 +160,11 @@ var App = {
 		if (Helpers.hasNoActiveInputs()) {
 			// J
 			if (event.keyCode === 106) {
-				console.log('J');
 				this.moveNext();
 			}
 
 			// K
 			if (event.keyCode === 107) {
-				console.log('K');
 				this.movePrev();
 			}
 		}
