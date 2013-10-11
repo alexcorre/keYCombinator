@@ -42,19 +42,25 @@ function ItemIterator($titles) {
 	this.items = $titles;
 }
 
+ItemIterator.prototype.current = function() {
+	console.log('current index: ' + this.index);
+	if (this.index >= 0 && this.index < this.items.length) {
+		return this.items[this.index];		
+	}
+}
+
 ItemIterator.prototype.next = function() {
 	if (this.index < (this.items.length - 1)) {
 		this.index ++;	
 	}
-	return this.items[this.index];
+	return this.current();
 }
 
 ItemIterator.prototype.prev = function() {
 	if (this.index > 0) {
 		this.index--;
 	}
-
-	return this.items[this.index];
+	return this.current();
 }
 
 /**
@@ -76,6 +82,18 @@ var Walker = {
 	parse: function() {
 		var $titles = $(this.titleSelector);
 		return new ItemIterator($titles);
+	},
+
+	activate: function($element) {
+		if ($element) {
+			$element.addClass('kc-current');
+		}
+	},
+
+	deactivate: function($element) {
+		if ($element) {
+			$element.removeClass('kc-current');
+		}
 	}
 
 };
@@ -105,6 +123,36 @@ var App = {
 	},
 
 	/**
+	 * @method moveNext
+	 *
+	 * Moves main cursor to the next story
+	 */
+	moveNext: function() {
+		var $currentElement = $(this.iterator.current());
+		Walker.deactivate($currentElement);
+
+		var $element = $(this.iterator.next());
+		Walker.activate($element);
+
+		//console.log('element', $element[0]);
+	},
+
+	/**
+	 * @method movePrev
+	 *
+	 * Moves cursor to the previous story
+	 */
+	movePrev: function() {
+		var $currentElement = $(this.iterator.current());
+		Walker.deactivate($currentElement);
+
+		var $element = $(this.iterator.prev());
+		Walker.activate($element);	
+
+		//console.log('element', $element[0]);
+	},
+
+	/**
 	 * @method keyPressed
 	 *
 	 * Base Handler for key press event
@@ -114,11 +162,13 @@ var App = {
 			// J
 			if (event.keyCode === 106) {
 				console.log('J');
+				this.moveNext();
 			}
 
 			// K
 			if (event.keyCode === 107) {
 				console.log('K');
+				this.movePrev();
 			}
 		}
 	}
