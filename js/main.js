@@ -43,7 +43,6 @@ function ItemIterator($titles) {
 }
 
 ItemIterator.prototype.current = function() {
-	console.log('current index: ' + this.index);
 	if (this.index >= 0 && this.index < this.items.length) {
 		return this.items[this.index];		
 	}
