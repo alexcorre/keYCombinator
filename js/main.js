@@ -14,9 +14,48 @@ var Helpers = {
 	 */
 	hasNoActiveInputs: function() {
 		return document.activeElement === document.body;
+	},
+
+	/**
+	 * @method wrapCollectionNodes
+	 *
+	 * @param $nodes {jQuery object} - list of nodes
+	 * @return {Array|jQuery Object} - array where each item is a jquery node
+	 */
+	wrapCollectionNodes: function($nodes) {
+		var wrappedNodes = _.map(nodes, function(element) {
+			return $(element);
+		});
+		return wrappedNodes;
 	}
 
 };
+
+/**
+ * @module ItemIterator
+ *
+ * The iterator data structure used to walk the array of items
+ * on hacker news
+ */
+function ItemIterator($titles) {
+	this.index = -1;
+	this.items = $titles;
+}
+
+ItemIterator.prototype.next = function() {
+	if (this.index < (this.items.length - 1)) {
+		this.index ++;	
+	}
+	return this.items[this.index];
+}
+
+ItemIterator.prototype.prev = function() {
+	if (this.index > 0) {
+		this.index--;
+	}
+
+	return this.items[this.index];
+}
 
 /**
  * @module Walker
@@ -35,29 +74,8 @@ var Walker = {
 	 * @method parse
 	 */
 	parse: function() {
-		var parsed = {
-			ups: [],
-			titles: [],
-			comments: []
-		};
-
-		// Up arrows
-		var $ups = $(this.upArrowSelector);
-		_.each($ups, function(element) {
-			parsed.ups.push($(element));
-		});
-
 		var $titles = $(this.titleSelector);
-		_.each($titles, function(element) {
-			parsed.titles.push($(element));
-		});
-
-		var $comments = $(this.commentsSelector);
-		_.each($titles, function(element) {
-			parsed.comments.push($(element));
-		});
-
-		return parsed;
+		return new ItemIterator($titles);
 	}
 
 };
@@ -71,13 +89,19 @@ var Walker = {
 var App = {
 	
 	/**
+	 * @property iterator
+	 *
+	 * The main iterator for walking the list of items
+	 */
+	iterator: null,
+
+	/**
 	 * @method initialize
 	 *
 	 * Perform app initialization on page load
 	 */
 	initialize: function() {
-		var parsed = Walker.parse();
-		console.log('parsed', parsed);
+		this.iterator = Walker.parse();
 	},
 
 	/**
